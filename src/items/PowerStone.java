@@ -10,6 +10,8 @@ public class PowerStone extends Item{
     if (user instanceof Player) {
       Player p =(Player) user;
       p.triggerSpecialSkillOnce();
+      used = true;
+      System.out.println(p.getName() + " used Power Stone! Special skill triggered without affecting cooldown.");
     }
   }
 }
