@@ -1,13 +1,15 @@
 package statuseffects;
+
+import entities.Combatant;
+
 public class Stun extends StatusEffect{
-  public Stun(int duration){
-    this.name ="Stun";
-    this.duration=duration;
+  public Stun(){
+    super(2);
+    this.name = "Stun";
   }
 
   @Override
-  public void apply(Object target){
-    System.out.println(target + " is stunned and canot act!");
+  public void apply(Combatant combatant){
   }
 
   @Override

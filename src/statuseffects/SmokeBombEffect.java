@@ -1,19 +1,24 @@
 package statuseffects;
-import entities.Player;
+
+import entities.Combatant;
+
 public class SmokeBombEffect extends StatusEffect{
-  public SmokeBombEffect(int duration){
+  public SmokeBombEffect(){
+    super(2);
     this.name="Smoke Bomb";
-    this.duration=duration;
   }
 
   @Override
-  public void apply(Object target){
-    System.out.println("Smoke Bomb active! Enemy attacks deal 0 damage.");
+  public void apply(Combatant combatant){
+    tick();
+  }
+
+  public boolean isActive() {
+    return duration > 0;
   }
 
   @Override
-  public String getDescriptioin(){
+  public String getDescription(){
     return "Smoke Bomb: enemy attacks deal 0 damage for " + duration + " turn(s).";
   }
 }
-    

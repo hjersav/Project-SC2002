@@ -1,70 +1,111 @@
-public class Player extends Combatant {
-    private int experiencePoints;
-    private int level;
-    private Inventory inventory;
+package entities;
 
-    public Player(String name, int health, int attack, int defense, int speed) {
-        super(name, health, attack, defense, speed);
-        this.experiencePoints = 0;
-        this.level = 1;
-        this.inventory = new Inventory();
-    }
+import java.util.ArrayList;
+import java.util.List;
+import statuseffects.StatusEffect;
+import items.Item;
+import turn_based_game.SpecialSkill;
 
-    // Player can use items during the game
-    public void useItem(Item item) {
-        item.applyEffect(this);
-        inventory.removeItem(item);
-    }
+public abstract class Player implements Combatant {
+    protected int hp;
+    protected int maxHpVal;
+    protected int atk;
+    protected int defn;
+    protected int spd;
+    protected List<StatusEffect> effects;
+    protected List<Item> bag;
+    protected SpecialSkill specialSkill;
 
-    // Level up logic
-    public void levelUp() {
-        this.level++;
-        this.experiencePoints = 0; // Reset experience after leveling up
-        // Increase player's stats (e.g., attack, health) on level-up
-        this.attack += 10;
-        this.health += 50;
-        System.out.println(this.getName() + " leveled up to level " + this.level + "!");
-    }
-
-    // Attack method that lets players choose actions
-    @Override
-    public void attack(Combatant target) {
-        basicAttack(target);
+    public Player(int maxHp, int attack, int defense, int speed) {
+        this.maxHpVal = maxHp;
+        this.hp = maxHp;
+        this.atk = attack;
+        this.defn = defense;
+        this.spd = speed;
+        this.effects = new ArrayList<>();
+        this.bag = new ArrayList<>();
     }
 
     @Override
-    public void executeSpecialSkill(Combatant target) {
-        // This is where player's special skills are executed
-        // For example, use Shield Bash or Arcane Blast depending on player type
+    public String getName() {
+        return this.getClass().getSimpleName();
     }
 
-    // Add experience points
-    public void gainExperience(int points) {
-        this.experiencePoints += points;
-        System.out.println(this.getName() + " gained " + points + " experience points!");
-        if (this.experiencePoints >= 100) {
-            levelUp();
+    @Override
+    public int getHp() {
+        return hp;
+    }
+
+    @Override
+    public int getMaxHp() {
+        return maxHpVal;
+    }
+
+    @Override
+    public int getAttack() {
+        return atk;
+    }
+
+    @Override
+    public int getDefense() {
+        return defn;
+    }
+
+    @Override
+    public int getSpeed() {
+        return spd;
+    }
+
+    @Override
+    public void takeDamage(int damage) {
+        hp = Math.max(0, hp - damage);
+    }
+
+    @Override
+    public boolean isDefeated() {
+        return hp <= 0;
+    }
+
+    @Override
+    public void addStatusEffect(StatusEffect effect) {
+        effects.add(effect);
+    }
+
+    @Override
+    public void removeStatusEffect(StatusEffect effect) {
+        effects.remove(effect);
+    }
+
+    @Override
+    public List<StatusEffect> getStatusEffects() {
+        return effects;
+    }
+
+    @Override
+    public void applyStatusEffects() {
+        for (int i = effects.size() - 1; i >= 0; i--) {
+            StatusEffect effect = effects.get(i);
+            effect.apply(this);
+            if (effect.isExpired()) {
+                effects.remove(i);
+            }
         }
     }
 
-    // Inventory class to handle items
-    private class Inventory {
-        private List<Item> items;
-
-        public Inventory() {
-            this.items = new ArrayList<>();
-        }
-
-        public void addItem(Item item) {
-            items.add(item);
-        }
-
-        public void removeItem(Item item) {
-            items.remove(item);
-        }
-
-        public List<Item> getItems() {
-            return items;
-        }
+    public List<Item> getInventory() {
+        return bag;
     }
+
+    public void setInventory(List<Item> inventory) {
+        this.bag = inventory;
+    }
+
+    public SpecialSkill getSpecialSkill() {
+        return specialSkill;
+    }
+
+    public void setSpecialSkill(SpecialSkill specialSkill) {
+        this.specialSkill = specialSkill;
+    }
+    public abstract String getSpecialSkillName();
 }

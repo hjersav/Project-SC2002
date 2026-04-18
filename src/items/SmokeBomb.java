@@ -1,17 +1,18 @@
 package items;
+
 import entities.Player;
+import entities.Combatant;
+import statuseffects.SmokeBombEffect;
+import java.util.List;
+
 public class SmokeBomb extends Item{
   public SmokeBomb(){
     this.name = "SmokeBomb";
   }
 
-  @Override
-  public void use(Object user){
-    if (user instanceof Player){
-      Player p = (Player) user;
-      p.applyStatusEffect(new statuseffects.SmokeBombEffect(2));
-      used = true;
-      System.out.println(p.getName() + " used Smoke Bomb! Enemy attacks deal 0 damage for 2 turns.");
-    }
+  public void use(Player player, List<Combatant> aliveEnemies){
+    player.addStatusEffect(new SmokeBombEffect());
+    used = true;
+    System.out.println("Smoke Bomb used! Enemy attacks will deal 0 damage for 2 turns!");
   }
 }

@@ -1,15 +1,18 @@
 package turn_based_game;
 
 import entities.Combatant;
+import entities.Player;
+import statuseffects.Stun;
 import statuseffects.DefendEffect;
 import statuseffects.SmokeBombEffect;
 import statuseffects.StatusEffect;
 
-public class BasicAttack extends Action {
+public class ShieldBash extends SpecialSkill {
     private Combatant target;
 
-    public BasicAttack() {
-        super("Basic Attack");
+    public ShieldBash() {
+        super();
+        this.name = "Shield Bash";
     }
 
     public void setTarget(Combatant target) {
@@ -17,9 +20,8 @@ public class BasicAttack extends Action {
     }
 
     @Override
-    public void execute(Combatant actor, Combatant target) {
+    protected void performSkill(Player player, Combatant target) {
         Combatant actualTarget = (this.target != null) ? this.target : target;
-        // Damage = max(0, AttackerAtk - (TargetDef + any bonus))
         int defBonus = 0;
         for (StatusEffect e : actualTarget.getStatusEffects()) {
             if (e instanceof DefendEffect) {
@@ -27,9 +29,8 @@ public class BasicAttack extends Action {
             }
         }
 
-        int baseDmg = Math.max(0, actor.getAttack() - (actualTarget.getDefense() + defBonus));
+        int baseDmg = Math.max(0, player.getAttack() - (actualTarget.getDefense() + defBonus));
 
-        // Smoke bomb blocks damage
         boolean smoke = false;
         for (StatusEffect e : actualTarget.getStatusEffects()) {
             if (e instanceof SmokeBombEffect) {
@@ -40,6 +41,13 @@ public class BasicAttack extends Action {
 
         int damage = smoke ? 0 : baseDmg;
         actualTarget.takeDamage(damage);
-        System.out.println(actor.getName() + " attacks " + actualTarget.getName() + " for " + damage + " damage!");
+
+        if (!smoke) {
+            actualTarget.addStatusEffect(new Stun());
+            System.out.println(player.getName() + " uses Shield Bash on " + actualTarget.getName() + " for " + damage + " damage!");
+            System.out.println(actualTarget.getName() + " is stunned for 2 turns!");
+        } else {
+            System.out.println(player.getName() + " uses Shield Bash on " + actualTarget.getName() + " but Smoke Bomb blocked it!");
+        }
     }
 }

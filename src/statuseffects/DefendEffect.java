@@ -1,18 +1,21 @@
 package statuseffects;
-import entities.Player;
+
+import entities.Combatant;
+
 public class DefendEffect extends StatusEffect{
-  public DefendEffect(int duration){
+  private static final int DEFENSE_BONUS = 10;
+  public DefendEffect(){
+    super(2);
     this.name="Defend";
-    this.duration=duration;
   }
 
- @Override
-  public void apply(Object target){
-    if (target instanceof Player){
-      Player p= (Player) target;
-      p.addDefenseBonus(DEFENSE_BONUS);
-      System.out.println(p.getName() + " is defending! +" + DEFENSE_BONUS + " defense for " + duration + " turn(s).");
-    }
+  @Override
+  public void apply(Combatant combatant){
+    tick();
+  }
+
+  public int getDefenseBonus() {
+    return DEFENSE_BONUS;
   }
 
   @Override
@@ -20,4 +23,3 @@ public class DefendEffect extends StatusEffect{
     return "Defending: +" + DEFENSE_BONUS + " defense for " + duration + " turn(s).";
   }
 }
-    
