@@ -29,6 +29,7 @@ public class Main {
             List<Item> inv = new ArrayList<>();
             for (Item it : chosenItems) {
                 inv.add(it);
+                
             }
             player.setInventory(inv);
 
